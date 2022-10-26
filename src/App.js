@@ -6,6 +6,7 @@ class App extends Component {
 
     this.state = {
       champions: [],
+      searchField: ''
     };
   }
 
@@ -24,26 +25,28 @@ class App extends Component {
       );
   }
   
-  render(){
-    console.log(this.state.champions)
+  render(){    
+    const champFilter = this.state.champions.filter((champion) => {
+      return champion.name.toLocaleLowerCase().includes(this.state.searchField);
+    })
+
     return (
       <div className="App">
-        <input className='search-box' type='search' placeholder='Type champion name' onChange={(event) => {
-        console.log(event.target.value);
-
-        const searchToLower = event.target.value.toLowerCase();
-        const champFilter = this.state.champions.filter((champion) => {
-          return champion.name.toLowerCase().includes(searchToLower);
-        })
-
-        this.setState(() => {
-          return {champions: champFilter}
-        })
+        <input 
+          className='search-box' 
+          type='search' 
+          placeholder='Type champion name' 
+          onChange={(event) => {
+            const searchField = event.target.value.toLocaleLowerCase();
+            this.setState(
+              () => {
+                return { searchField }
+            })
       }}/>
 
-        {this.state.champions.map((champion) => {
+        {champFilter.map((champion) => {
           return (
-            <div key={champion.key}>
+            <div key={champion.id}>
               <h1>{champion.id}</h1>
               <h2>{champion.title}</h2>
             </div>
