@@ -1,4 +1,6 @@
 import {Component} from 'react';
+import CardList from './components/card-list/card-list.component';
+import SearchBox from './components/search-box/search-box.component';
 
 class App extends Component {
   constructor() {
@@ -25,33 +27,33 @@ class App extends Component {
       );
   }
   
-  render(){    
-    const champFilter = this.state.champions.filter((champion) => {
-      return champion.name.toLocaleLowerCase().includes(this.state.searchField);
+  onSearchChange = (event) => {
+    const searchField = event.target.value.toLocaleLowerCase();
+    this.setState(
+      () => {
+        return { searchField }
+    })
+  }
+
+  render(){  
+    const { champions, searchField } = this.state;
+    const { onSearchChange } = this
+    
+    const champFilter = champions.filter((champion) => {
+      return champion.name.toLocaleLowerCase().includes(searchField);
     })
 
     return (
       <div className="App">
-        <input 
+        <SearchBox 
           className='search-box' 
-          type='search' 
-          placeholder='Type champion name' 
-          onChange={(event) => {
-            const searchField = event.target.value.toLocaleLowerCase();
-            this.setState(
-              () => {
-                return { searchField }
-            })
-      }}/>
-
-        {champFilter.map((champion) => {
-          return (
-            <div key={champion.id}>
-              <h1>{champion.id}</h1>
-              <h2>{champion.title}</h2>
-            </div>
-          )
-        })}
+          onSearchHandler = { onSearchChange } 
+          placeholder='Type champion name'
+        />
+        
+        <CardList 
+          champions = { champFilter }
+        />
       </div>
     );
   }
